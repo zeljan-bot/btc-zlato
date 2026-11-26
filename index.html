@@ -239,7 +239,7 @@ async function loadGold(live) {
 }
 async function loadFx(live) {
   if (!live) return null;
-  try { const j = await getJSON('https://api.frankfurter.app/latest?from=USD&to=EUR', 8000); return +j.rates.EUR; } catch (e) { return null; }
+  try { const j = await getJSON('https://api.frankfurter.dev/v1/latest?base=USD&symbols=EUR', 8000); return +j.rates.EUR; } catch (e) { try { const j = await getJSON('https://open.er-api.com/v6/latest/USD', 8000); return +j.rates.EUR; } catch (e2) { return null; } }
 }
 
 // ---------- MODEL ----------
@@ -414,7 +414,7 @@ function renderStatus(t, live) {
   const item = (lab, st) => { const sp = el('span'); const d = el('span', {class: 'dot'}); d.style.background = st.ok ? css('--ok') : css('--warn'); sp.append(d, el('b', {}, lab + ': '), document.createTextNode(st.txt)); if (st.err) sp.title = st.err; s.append(sp); };
   item('BTC povijest', ST.btcHist); item('BTC cijena', ST.btcSpot); item('Zlato cijena', ST.goldSpot); item('Zlato povijest', ST.goldHist);
   if (ST.mvrvOff) s.append(el('span', {}, 'MVRV isključen (procjena zastarjela), vrednovanje samo iz potencijske funkcije.')); else if (ST.mvrvEst) s.append(el('span', {}, 'MVRV za zadnje dane procijenjen.'));
-  if (FX) s.append(el('span', {}, '1 USD = ' + L.format(',.4f')(FX) + ' EUR (ECB, Frankfurter)'));
+  if (FX) s.append(el('span', {}, '1 USD = ' + L.format(',.4f')(FX) + ' EUR'));
   if (!live) s.append(el('span', {}, 'Ugrađeni podaci, čekam izvore…'));
   s.append(el('span', {}, 'Izračunato ' + t.toLocaleString('hr-HR')));
   const b = el('button', {class: 'ref'}, 'Osvježi'); b.addEventListener('click', () => run(true)); s.append(b);
